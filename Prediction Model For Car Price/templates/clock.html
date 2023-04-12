@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Price Prediction System</title>
+</head>
+<body>
+<nav>
+<div class="header">
+	<ul>
+		<li class="active">Car Price Prediction</li>
+                                   <li><div id = "MyClockDisplay" class = "clock" onload = "showTime()"> </div>  
+<script>  
+function showTime(){  
+    var date = new Date();  
+    var h = date.getHours();  
+    var m = date.getMinutes();  
+    var s = date.getSeconds();  
+    var session = "AM";  
+    if(h == 0) {  
+        h = 12;  
+    }  
+    if(h > 12) {  
+        hh = h - 12;  
+        session = "PM";  
+    }  
+    h = (h < 10) ? "0" + h : h;  
+    m = (m < 10) ? "0" + m : m;  
+    s = (s < 10) ? "0" + s : s;  
+    var time = h + ":" + m + ":" + s + " " + session;  
+    document.getElementById("MyClockDisplay").innerText = time;  
+    document.getElementById("MyClockDisplay").textContent = time;  
+    setTimeout(showTime, 1000);  
+}  
+showTime();  
+</script></li>
+		<li><a href="/carrec">Car Details</a></li>
+
+	</ul>
+</div>
+</nav>
+
+<div class="container">
+	<div class="row">
+        <div class="card mt-50" style="width: 100%; height: 100%">
+            <div class="card-header" style="text-align: center">
+                <h1>Welcome to Car Price Predictor</h1>
+            </div>
+            <div class="card-body">
+                <div class="col-12" style="text-align: center">
+                    <h3>This app predicts the price of a car you want to sell or buy. Try filling the details below: </h3>
+                </div>
+                <br>
+                <form method="post" accept-charset="utf-8" name="Modelform">
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <label><h2><b>Select the company:</b></h2></label>
+                        <select class="selectpicker form-control" id="company" name="company" required="1"
+                                onchange="load_car_models(this.id,'car_models')">
+                            {% for company in companies %}
+                            <option value="{{ company }}">{{ company }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><label><b><h2>Select the model:</h2></b> </label>
+                        <select class="selectpicker form-control" id="car_models" name="car_models" required="1">
+                        </select>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><label><b><h2>Select Year of Purchase:</h2></b> </label>
+                        <select class="selectpicker form-control" id="year" name="year" required="1">
+                            {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><label><b><h2>Select the Fuel Type:</h2></b> </label>
+                        <select class="selectpicker form-control" id="fuel_type" name="fuel_type" required="1">
+                            {% for fuel in fuel_types %}
+                            <option value="{{ fuel }}">{{ fuel }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><label><b><h2>Enter the Number of Kilometres that the car has travelled:</h2></b> </label>
+                        <input type="text" class="form-control" id="kilo_driven" name="kilo_driven"
+                               placeholder="Enter the kilometres driven ">
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><label><b><h2>Select the Transmission Type:</h2></b> </label>
+                        <select class="selectpicker form-control" id="transmission" name="transmission" required="1">
+                            {% for trans in transmission %}
+                            <option value="{{ trans }}">{{ trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
+                        <br><button  id="sub" class="btn btn-primary form-control" onclick="send_data()"><h2  j>Predict Price</h2></button>
+                    </div>
+                </form>
+                <br>
+                <div class="row">
+                    <div class="col-12" style="text-align: center">
+                        <h2><span id="prediction"></span></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function load_car_models(company_id,car_model_id)
+    {
+        var company=document.getElementById(company_id);
+        var car_model= document.getElementById(car_model_id);
+        console.log(company.value);
+        car_model.value="";
+        car_model.innerHTML="";
+        {% for company in companies %}
+            if( company.value == "{{ company }}")
+            {
+                {% for model in car_models %}
+                    {% if company in model %}
+
+                        var newOption= document.createElement("option");
+                        newOption.value="{{ model }}";
+                        newOption.innerHTML="{{ model }}";
+                        car_model.options.add(newOption);
+                    {% endif %}
+                {% endfor %}
+            }
+        {% endfor %}
+    }
+
+    function form_handler(event) {
+        event.preventDefault(); // Don't submit the form normally
+    }
+    function send_data()
+    {
+        document.querySelector('form').addEventListener("submit",form_handler);
+
+        var fd=new FormData(document.querySelector('form'));
+
+        var xhr= new XMLHttpRequest({mozSystem: true});
+
+        xhr.open('POST','/predict',true);
+        document.getElementById('prediction').innerHTML="Wait! Predicting Price.....";
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                document.getElementById('prediction').innerHTML="Prediction: ₹"+xhr.responseText;
+
+            }
+        };
+
+        xhr.onload= function(){};
+
+        xhr.send(fd);
+    }
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,500,700');
+
+*{
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background: #fdf5e6;
+	font-family: 'Roboto', sans-serif;
+}
+
+.header{
+	width: 100%;
+	height: 60px;
+	background: #00ffff;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+
+ul{
+	list-style: none;
+	width: 900px;
+	color: #fff;
+	margin: 0 auto;
+}
+
+ul li{
+	width: 300px;
+	height: 60px;
+	float: left;
+	line-height: 60px;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 18px;
+	cursor: pointer;
+  transition: all 1s ease;
+}
+
+ul li.active{
+	background: #0000ff;
+}
+
+ul li:hover{
+	background: #00bfff
+}
+
+.container{
+	width: 100%;
+	margin-top: 60px;
+}
+/* Style the content div elements. */
+
+#company {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#company:hover {
+            background-color: coral;
+        }
+
+#car_models {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#car_models:hover {
+            background-color: coral;
+        }
+
+#year {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#year:hover {
+            background-color: coral;
+        }
+
+#fuel_type {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#fuel_type:hover {
+            background-color: coral;
+        }
+
+#kilo_driven {
+            border-radius: 14px;
+            width: 400px;
+            height: 30px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+#transmission {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#transmission:hover {
+            background-color: coral;
+        }
+
+#sub {
+            width: 150px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 12px;
+        }
+
+#sub:hover {
+            background-color: darkcyan;
+        }
+
+.content{
+	padding: 100px 250px;
+	color: #3e4152;
+}
+
+.content h1{
+	padding-bottom: 10px;
+}
+
+.content p{
+	font-size: 16px;
+	line-height: 22px;
+}
+
+.content:nth-child(even){
+	background: #fff;
+}
+
+.footer{
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	background: #00ffff;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+}
+
+.footer p{
+	font-weight: 700;
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 20px;
+	color: #fff;
+}
+
+@media screen and (max-width: 850px){
+  .content{
+    padding: 100px 150px;
+  }
+}
+
+@media screen and (max-width: 650px){
+  .content{
+    padding: 100px 50px;
+  }
+}
+</style>
+<div class="footer">
+	<p>This Webpage of Car Price Prediction and Details System</p>
+</div>
+</body>
+</html>

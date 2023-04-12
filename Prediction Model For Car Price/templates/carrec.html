@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Details Page</title>
+</head>
+<body>
+<nav>
+<div class="header">
+	<ul>
+		<li><a href="/">Car Price Prediction</a></li>
+                                  <li><div id = "MyClockDisplay" class = "clock" onload = "showTime()"> </div>  
+<script>  
+function showTime(){  
+    var date = new Date();  
+    var h = date.getHours();  
+    var m = date.getMinutes();  
+    var s = date.getSeconds();   
+    h = (h < 10) ? "0" + h : h;  
+    m = (m < 10) ? "0" + m : m;  
+    s = (s < 10) ? "0" + s : s;  
+    var time = h + ":" + m + ":" + s;  
+    document.getElementById("MyClockDisplay").innerText = time;  
+    document.getElementById("MyClockDisplay").textContent = time;  
+    setTimeout(showTime, 1000);  
+}  
+showTime();  
+</script></li>
+		<li class="active">Car Details</li>
+
+	</ul>
+</div>
+</nav>
+
+<div class="container">
+	<div class="row">
+        <div class="card mt-50" style="width: 100%; height: 100%">
+            <div class="card-header" style="text-align: center">
+                <h1>Welcome to Car Detail Page</h1>
+            </div>
+            <div align="center">
+            <table>
+                <h1>
+                <!--Displaying the converted table-->
+                     {% for table in tables %}
+                    <h2>{{titles[loop.index]}}</h2>                            
+                    {{ table|safe }}
+                    {% endfor %}     
+                </h1> 
+            </table>
+        </div>
+<br><br><br><br><br>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,500,700');
+
+*{
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background: #fdf5e6;
+	font-family: 'Roboto', sans-serif;
+}
+
+.header{
+	width: 100%;
+	height: 60px;
+	background: #00ffff;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+
+ul{
+	list-style: none;
+	width: 900px;
+	color: #fff;
+	margin: 0 auto;
+}
+
+ul li{
+	width: 300px;
+	height: 60px;
+	float: left;
+	line-height: 60px;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 18px;
+	cursor: pointer;
+  transition: all 1s ease;
+}
+
+ul li.active{
+	background: #0000ff;
+}
+
+ul li:hover{
+	background: #00bfff
+}
+
+.container{
+	width: 100%;
+	margin-top: 60px;
+}
+/* Style the content div elements. */
+
+#company {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#company:hover {
+            background-color: coral;
+        }
+
+#car_models {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#car_models:hover {
+            background-color: coral;
+        }
+
+#year {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#year:hover {
+            background-color: coral;
+        }
+
+#fuel_type {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#fuel_type:hover {
+            background-color: coral;
+        }
+
+#kilo_driven {
+            border-radius: 14px;
+            width: 400px;
+            height: 30px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+#transmission {
+            width: 400px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+#transmission:hover {
+            background-color: coral;
+        }
+
+#sub {
+            width: 150px;
+            height: 30px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 12px;
+        }
+
+#sub:hover {
+            background-color: darkcyan;
+        }
+
+.content{
+	padding: 100px 250px;
+	color: #3e4152;
+}
+
+.content h1{
+	padding-bottom: 10px;
+}
+
+.content p{
+	font-size: 16px;
+	line-height: 22px;
+}
+
+.content:nth-child(even){
+	background: #fff;
+}
+
+.footer{
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	background: #00ffff;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+}
+
+.footer p{
+	font-weight: 700;
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 20px;
+	color: #fff;
+}
+
+@media screen and (max-width: 850px){
+  .content{
+    padding: 100px 150px;
+  }
+}
+
+@media screen and (max-width: 650px){
+  .content{
+    padding: 100px 50px;
+  }
+}
+</style>
+<div class="footer">
+	<p>This Webpage of Car Price Prediction and Details System</p>
+</div>
+</body>
+</html>
